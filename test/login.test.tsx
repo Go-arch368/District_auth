@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LoginForm from "@/components/auth/LoginForm";
-import { login } from "@/actions/login";
+import { login } from "../actions/login"
 
-jest.mock("@/actions/login", () => ({
+jest.mock("../actions/login", () => ({
   login: jest.fn(),
 }));
 
@@ -45,7 +45,7 @@ describe("LoginForm Component", () => {
     const user = userEvent.setup();
     (login as jest.Mock).mockResolvedValueOnce({ error: "Invalid credentials" });
     render(<LoginForm />);
-
+    
     await user.type(screen.getByLabelText(/Email/i), "test@example.com");
     await user.type(screen.getByLabelText(/Password/i), "wrongpassword");
     await user.click(screen.getByRole("button", { name: /Login/i }));

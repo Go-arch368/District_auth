@@ -11,7 +11,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "postinstall": "prisma generate",
-    "sonar": "sonar-scanner -Dsonar.scanner.disableCloud=true"
+   "sonar": "npm run test:coverage && sonarqube-scanner"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",
@@ -54,5 +54,6 @@
     "ts-jest": "^29.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"
-  }
+  
+}
 }
