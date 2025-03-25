@@ -1,14 +1,17 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import RegisterForm from "@/components/auth/RegisterForm";
-
 import { register } from "@/actions/register";
 
-// Mock the register function
 jest.mock("@/actions/register", () => ({
   register: jest.fn(),
 }));
 
 describe("RegisterForm Component", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("renders the form fields correctly", () => {
     render(<RegisterForm />);
 
@@ -19,53 +22,47 @@ describe("RegisterForm Component", () => {
   });
 
   test("updates input values correctly", async () => {
+    const user = userEvent.setup();
     render(<RegisterForm />);
-    const nameInput = screen.getByLabelText(/Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
 
-    await userEvent.type(nameInput, "John Doe");
-    await userEvent.type(emailInput, "johndoe@example.com");
-    await userEvent.type(passwordInput, "password123");
+    await user.type(screen.getByLabelText(/Name/i), "John Doe");
+    await user.type(screen.getByLabelText(/Email/i), "johndoe@example.com");
+    await user.type(screen.getByLabelText(/Password/i), "password123");
 
-    expect(nameInput).toHaveValue("John Doe");
-    expect(emailInput).toHaveValue("johndoe@example.com");
-    expect(passwordInput).toHaveValue("password123");
+    expect(screen.getByLabelText(/Name/i)).toHaveValue("John Doe");
+    expect(screen.getByLabelText(/Email/i)).toHaveValue("johndoe@example.com");
+    expect(screen.getByLabelText(/Password/i)).toHaveValue("password123");
   });
 
   test("displays error message on failed registration", async () => {
-    (register as jest.Mock).mockResolvedValue({ error: "Registration failed" });
-
+    const user = userEvent.setup();
+    (register as jest.Mock).mockResolvedValueOnce({ error: "Registration failed" });
     render(<RegisterForm />);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Create an Account/i });
 
-    await userEvent.type(emailInput, "johndoe@example.com");
-    await userEvent.type(passwordInput, "password123");
+    await user.type(screen.getByLabelText(/Name/i), "John Doe");
+    await user.type(screen.getByLabelText(/Email/i), "johndoe@example.com");
+    await user.type(screen.getByLabelText(/Password/i), "password123");
 
-    await act(async () => {
-      fireEvent.click(submitButton);
+    await user.click(screen.getByRole("button", { name: /Create an Account/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Registration failed/i)).toBeInTheDocument();
     });
-
-    expect(await screen.findByText(/Registration failed/i)).toBeInTheDocument();
   });
 
   test("displays success message on successful registration", async () => {
-    (register as jest.Mock).mockResolvedValue({ success: "Registration successful" });
-
+    const user = userEvent.setup();
+    (register as jest.Mock).mockResolvedValueOnce({ success: "Registration successful" });
     render(<RegisterForm />);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Create an Account/i });
 
-    await userEvent.type(emailInput, "johndoe@example.com");
-    await userEvent.type(passwordInput, "password123");
+    await user.type(screen.getByLabelText(/Name/i), "John Doe");
+    await user.type(screen.getByLabelText(/Email/i), "johndoe@example.com");
+    await user.type(screen.getByLabelText(/Password/i), "password123");
 
-    await act(async () => {
-      fireEvent.click(submitButton);
+    await user.click(screen.getByRole("button", { name: /Create an Account/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Registration successful/i)).toBeInTheDocument();
     });
-
-    expect(await screen.findByText(/Registration successful/i)).toBeInTheDocument();
   });
 });
