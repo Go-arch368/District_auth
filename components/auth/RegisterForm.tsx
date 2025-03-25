@@ -44,22 +44,15 @@ export const RegisterForm = () => {
     startTransition(async () => {
       try {
         const result = await register(values);
-        
         if (result?.error) {
           setError(result.error);
           return;
         }
-
-        // If no error returned, assume success
         setSuccess("Registration successful! Redirecting to login...");
         form.reset();
-        
-        // Redirect after 2 seconds to show success message
-        setTimeout(() => {
-          router.push("/auth/login");
-        }, 2000);
-        
+        setTimeout(() => router.push("/auth/login"), 2000);
       } catch (error) {
+        console.error("Registration error:", error); // Log the error
         setError("An unexpected error occurred during registration");
       }
     });
