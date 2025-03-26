@@ -7,7 +7,7 @@ module.exports = createJestConfig({
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['lcov', 'text', 'html'],
-  coverageThreshold: {  // 👈 Enforce 80% coverage
+  coverageThreshold: {
     global: {
       branches: 80,
       functions: 80,
@@ -15,5 +15,14 @@ module.exports = createJestConfig({
       statements: 80
     }
   },
-  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"]
+  collectCoverageFrom: [
+    "components/**/*.{js,jsx,ts,tsx}",
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!**/node_modules/**",  // Ignore node_modules
+    "!**/.next/**",         // Ignore Next.js cache
+    "!**/coverage/**",      // Ignore previous coverage reports
+    "!**/jest.config.js",   // Ignore Jest config itself
+    "!**/*.config.js"       // Ignore other config files
+  ],
+  transformIgnorePatterns: ["<rootDir>/node_modules/"], // Ensure transformations
 });

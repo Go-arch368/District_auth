@@ -1,6 +1,6 @@
+import LoginForm from "@/components/auth/LoginForm";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import LoginForm from "@/components/auth/LoginForm";
 import { login } from "../actions/login"
 
 jest.mock("../actions/login", () => ({
