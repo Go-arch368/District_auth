@@ -1,26 +1,44 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-import { error } from "console";
+import js from '@eslint/js';
+import nextPlugin from '@next/eslint-plugin-next';
+import prettier from 'eslint-plugin-prettier';
+import globals from 'globals';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+export default [
+  // Core ESLint recommended rules
+  js.configs.recommended,
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+  // Next.js rules
+  {
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+    },
+  },
 
-const eslintConfig = {
-  extends: [
-    ...compat.extends("next/core-web-vitals", "next/typescript"),
-    "eslint:recommended",
-    "next",
-    "next/core-web-vitals",  // Note: This is duplicated from the compat.extends
-    "prettier"
-  ],
-  "plugins":["prettier"],
-  "rules":{
-    "prettier/prettier":"error"
-  }
-};
-export default eslintConfig;
+  // TypeScript support (if using)
+  // Requires @typescript-eslint/eslint-plugin installation
+  // ...typescriptConfig,
+
+  // Prettier integration
+  {
+    plugins: {
+      prettier,
+    },
+    rules: {
+      'prettier/prettier': 'error',
+    },
+  },
+
+  // Custom settings
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+  },
+];
