@@ -1,12 +1,17 @@
-import { auth, signOut } from "@/auth";
-import { redirect } from "next/navigation";
+"use client";
+
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default async function SettingsPage() {
-  const session = await auth();
+export default function SettingsPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
 
   if (!session?.user) {
-    redirect("/auth/login");
+    router.push("/auth/login");
+    return null;
   }
 
   return (
@@ -20,16 +25,13 @@ export default async function SettingsPage() {
         </pre>
       </div>
 
-      <form
-        action={async () => {
-          "use server";
-          await signOut({ redirectTo: "/auth/login" });
-        }}
+      <Button 
+        onClick={() => signOut({ callbackUrl: "/auth/login" })}
+        variant="destructive" 
+        className="w-full sm:w-auto"
       >
-        <Button type="submit" variant="destructive" className="w-full sm:w-auto">
-          Sign Out
-        </Button>
-      </form>
+        Sign Out
+      </Button>
     </div>
   );
 }
