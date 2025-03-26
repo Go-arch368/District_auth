@@ -1,17 +1,12 @@
-"use client";
-
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { auth, signOut } from "@/auth";
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default function SettingsPage() {
-  const { data: session } = useSession();
-  const router = useRouter();
+export default async function SettingsPage() {
+  const session = await auth();
 
   if (!session?.user) {
-    router.push("/auth/login");
-    return null;
+    redirect("/auth/login");
   }
 
   return (
@@ -25,13 +20,16 @@ export default function SettingsPage() {
         </pre>
       </div>
 
-      <Button 
-        onClick={() => signOut({ callbackUrl: "/auth/login" })}
-        variant="destructive" 
-        className="w-full sm:w-auto"
+      <form
+        action={async () => {
+          "use server";
+          await signOut({ redirectTo: "/auth/login" });
+        }}
       >
-        Sign Out
-      </Button>
+        <Button type="submit" variant="destructive" className="w-full sm:w-auto">
+          Sign Out
+        </Button>
+      </form>
     </div>
   );
 }

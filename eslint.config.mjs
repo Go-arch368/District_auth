@@ -1,38 +1,16 @@
 import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
-import prettier from 'eslint-plugin-prettier';
 import globals from 'globals';
 
 export default [
-  // Core ESLint recommended rules
+  // Base ESLint recommended config
   js.configs.recommended,
-
-  // Next.js rules
-  {
-    plugins: {
-      '@next/next': nextPlugin,
-    },
-    rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
-    },
-  },
-
-  // TypeScript support (if using)
-  // Requires @typescript-eslint/eslint-plugin installation
-  // ...typescriptConfig,
-
-  // Prettier integration
-  {
-    plugins: {
-      prettier,
-    },
-    rules: {
-      'prettier/prettier': 'error',
-    },
-  },
-
-  // Custom settings
+  
+  // Next.js recommended configs
+  ...nextPlugin.configs.recommended,
+  ...nextPlugin.configs['core-web-vitals'],
+  
+  // Global variables
   {
     languageOptions: {
       globals: {
@@ -40,5 +18,19 @@ export default [
         ...globals.node,
       },
     },
+  },
+  
+  // Custom rules and ignores
+  {
+    rules: {
+      // Add your custom rules here
+      'prettier/prettier': 'error',
+    },
+    ignores: [
+      '.next/',
+      'node_modules/',
+      'dist/',
+      'build/'
+    ],
   },
 ];
