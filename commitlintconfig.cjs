@@ -24,3 +24,5 @@ module.exports ={
         }
     ]
 }
+
+'@ | Out-File -Encoding utf8 commitlint.config.js'
