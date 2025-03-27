@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { register } from "@/actions/register";
+
 import { 
   Form,
   FormControl,
@@ -132,6 +133,8 @@ export const RegisterForm = () => {
           
           <Button
             type="submit"
+            variant="default"
+            size="lg"
             className="w-full"
             disabled={isPending}
           >
