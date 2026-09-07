@@ -13,7 +13,7 @@ export default auth((req) => {
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-    
+                          
     if (isApiAuthRoute) {
         return NextResponse.next(); // Changed from null
     }
